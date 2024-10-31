@@ -1,5 +1,7 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -7,6 +9,8 @@ import React from 'react';
 const NavBar = () => {
   const pathName = usePathname();
   const router = useRouter();
+  const session = useSession();
+  console.log({ session });
   const links = [
     {
       title: 'About',
@@ -39,7 +43,7 @@ const NavBar = () => {
   ];
 
   const handle = () => {
-    router.push('/portfolio');
+    router.push('/api/auth/signin');
   };
 
   if (pathName.includes('/dashboard'))
@@ -62,12 +66,26 @@ const NavBar = () => {
             </li>
           ))}
         </ul>
-        <button
-          className="bg-slate-100 px-5 py-2  rounded text-black"
-          onClick={handle}
-        >
-          Login
-        </button>
+        {session ? (
+          <button onClick={handle} className="bg-blue-500 px-4 py-2">
+            Sign Out
+          </button>
+        ) : (
+          <button onClick={handle} className="bg-blue-500 px-4 py-2">
+            Sign In
+          </button>
+        )}
+
+        <div>
+          <Image
+            src={session?.data?.user?.image}
+            alt={session?.data?.user?.name}
+            width={40}
+            height={40}
+          ></Image>
+          <h4>{session?.data?.user?.name}</h4>
+          <p>{session?.data?.user?.type}</p>
+        </div>
       </nav>
     </div>
   );

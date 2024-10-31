@@ -1,3 +1,5 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
 import React from 'react';
 
 const getTime = async () => {
@@ -11,8 +13,10 @@ const getTime = async () => {
   return data.currentTime;
 };
 
-const page = () => {
+const page = async () => {
   const currentTime = getTime();
+  const session = await getServerSession(authOptions);
+  console.log({ session });
   return (
     <div className="h-screen">
       <h4>Vision</h4>
